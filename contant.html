@@ -4,18 +4,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>STORE2GO</title>
-  <link rel="stylesheet" href="styles.css">
+  <title>Mobile Phones</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+  <link rel="stylesheet" href="./styles.css">
 
-  
 </head>
 
 <body>
-
   <nav class="navbar navbar-expand-lg navbar bg-light">
     <div class="container">
       <a class="navbar-brand" href="#">STORE2GO</a>
@@ -55,69 +52,39 @@
       </div>
     </div>
   </nav>
+  </nav>
+  <div class="container">
+    <br>
+    <h1>Contact Us</h1>
+    <p>Thank you for visiting STORE2GO! We're here to assist you with any questions or concerns you may have. Please
+      feel free to reach out to us using the information provided below. Our dedicated team is committed to providing
+      you with the best possible service.</p>
+    <br>
 
- <!-- Product List -->
-  <div class="container mt-4" id="productListContainer">
-    <h2>Products</h2>
-    <div class="row" id="productList">
-      <!-- Product cards will be dynamically added here -->
-    </div>
+    <h5>Email:</h5>
+    <p>info@store2go.com</p>
+
+    <br>
+    <br>
+    <h2>About STORE2GO:</h2>
+    <p>STORE2GO was established in 2024 by Nitish Rana and Anant Kumar as part of a college project. Our mission is to provide customers
+      with high-quality mobile devices and accessories at competitive prices. We are dedicated to offering exceptional
+      customer service and ensuring a seamless shopping experience for all our patrons.</p>
+    <br>
+    <p>If you have any questions about our products, services, or policies, please don't hesitate to get in touch with
+      us. Your satisfaction is our top priority, and we look forward to serving you!</p>
   </div>
-
-  
-  
+  <br> <br>
+  <footer class="footer mt-5">
+    <div class="container">
+      <span class="text-muted">STORE2GO &copy; 2024. All rights reserved. | <a href="./contant.html">Contact
+          Us</a></span>
+    </div>
+  </footer>
 
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  <script src="main.js"></script>
-
-  <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js'
-    import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js'
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyB03_K2sDWYo90761ZFAzjcqwJKWR7S5w0",
-      authDomain: "loginpage-b299a.firebaseapp.com",
-      projectId: "loginpage-b299a",
-      storageBucket: "loginpage-b299a.appspot.com",
-      messagingSenderId: "675343735743",
-      appId: "1:675343735743:web:3da0f6d12000f219365f0a"
-    };
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    // Function to display user's email
-    function displayUserEmail(user) {
-      const userEmailElement = document.getElementById("userEmail");
-      const signOutLiElement = document.getElementById("signOutLi");
-      if (user && user.email) {
-        userEmailElement.textContent = user.email;
-        signOutLiElement.style.display = "block";
-      } else {
-        userEmailElement.textContent = "";
-        signOutLiElement.style.display = "none";
-      }
-    }
-
-    // Check if user is logged in on page load
-    onAuthStateChanged(auth, (user) => {
-      displayUserEmail(user);
-    });
-
-    // Sign out function
-    document.getElementById("signOutBtn").addEventListener("click", function () {
-      signOut(auth).then(() => {
-        // Sign-out successful.
-        window.location.href = "./index.html"; // Redirect to login page after sign-out
-      }).catch((error) => {
-        // An error happened.
-        console.error(error);
-      });
-    });
-  </script>
-
 </body>
 
 </html>

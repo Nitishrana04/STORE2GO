@@ -24,16 +24,16 @@ const products = [
   { 
     name: "Samsung Galaxy S21", 
     description: "Samsung Galaxy S21 is a flagship smartphone with a stunning display, powerful processor, and versatile camera system.", 
-    imageUrl: "https://images.unsplash.com/photo-1611195655284-7b9fa9af153d?q=80&w=1080&auto=format&fit=crop", 
+    imageUrl: "https://images.unsplash.com/photo-1615264952739-555010f3b29b?q=80&w=1780&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", 
     price:  65000, 
-    colors: ["Phantom Gray", "Phantom White", "Phantom Violet"]
+    colors: ["Gray", "Phantom White", "Violet"]
   },
   { 
     name: "Google Pixel 5", 
     description: "Google Pixel 5 offers a clean Android experience, excellent camera capabilities, and 5G connectivity.", 
-    imageUrl: "https://images.unsplash.com/photo-1602583218885-83d83a0d45fd?q=80&w=1080&auto=format&fit=crop", 
+    imageUrl: "https://images.unsplash.com/photo-1602863414373-ef18f5f1ce3a?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", 
     price: 55000, 
-    colors: ["Just Black", "Sorta Sage"]
+    colors: ["Black", "Sage"]
   }
 ];
 
