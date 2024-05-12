@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up - STORE2GO</title>
+  <link rel="stylesheet" href="Styles.css">
+  
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <!-- Sign Up Form -->
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            
+            <form id="signupForm">
+              <h3 class="text-center mb-4">Sign Up</h3>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" placeholder="Enter email">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" id="password" placeholder="Password">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
+                
+            </form>
+        </div>
+    </div>
+</div>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js';
+    import { getAuth, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js';
+  
+    const firebaseConfig = {
+  apiKey: "AIzaSyB03_K2sDWYo90761ZFAzjcqwJKWR7S5w0",
+  authDomain: "loginpage-b299a.firebaseapp.com",
+  databaseURL: "https://loginpage-b299a-default-rtdb.firebaseio.com",
+  projectId: "loginpage-b299a",
+  storageBucket: "loginpage-b299a.appspot.com",
+  messagingSenderId: "675343735743",
+  appId: "1:675343735743:web:3da0f6d12000f219365f0a"
+};
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+  
+    // Sign Up Form Submission
+    document.getElementById('signupForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          // Redirect to index page after successful signup
+          alert("Registration successful! You can now log in.");
+          window.location.href = "./login.html";
+        })
+        .catch((error) => {
+          console.error(error.code, error.message);
+          alert("Error: " + error.message);
+        });
+    });
+  </script>
+  
+  
+
+</body>
+
+</html>

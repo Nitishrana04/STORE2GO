@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Include necessary meta tags, stylesheets, and scripts -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+ <link rel="stylesheet" href="payment.css">
+</head>
+<body>
+
+  <!-- Navbar and other HTML content remains the same -->
+
+  <div class="container mt-5">
+   
+    <!-- Payment form -->
+    <form id="paymentForm">
+        <div class="form-group">
+            <label for="fullName">Full Name</label>
+            <input type="text" class="form-control" id="fullName" >
+        </div>
+        <div class="form-group">
+            <label for="address">Address with Pincode</label>
+            <input type="text" class="form-control" id="address" >
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" class="form-control" id="email" readonly>
+      </div>
+      <div class="form-group">
+        <label for="phoneNumber">Phone Number</label>
+        <input type="tel" class="form-control" id="phoneNumber" >
+    </div>
+        <div class="form-group">
+            <label for="upiId">UPI Transaction ID</label>
+            <input type="text" class="form-control" id="upiId">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    <!-- QR code image -->
+    <div class="qrcode">
+      <img src="QrCode.jpeg" alt="QR Code" style="max-width: 500px; max-height: 500px;">
+  </div>
+  <div id="productDetails"></div>
+  <div id="totalPrice"></div>
+  
+</div>
+
+
+
+  <!-- Include Firebase scripts -->
+  <!-- Include Firebase scripts -->
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js'
+  import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js'
+  import { getFirestore, doc, collection,addDoc,setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js';
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB03_K2sDWYo90761ZFAzjcqwJKWR7S5w0",
+    authDomain: "loginpage-b299a.firebaseapp.com",
+    databaseURL: "https://loginpage-b299a-default-rtdb.firebaseio.com",
+    projectId: "loginpage-b299a",
+    storageBucket: "loginpage-b299a.appspot.com",
+    messagingSenderId: "675343735743",
+    appId: "1:675343735743:web:3da0f6d12000f219365f0a",
+    measurementId: "G-G724PQ24GW"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // Function to display cart data
+  function displayCartData() {
+    const cartItems = JSON.parse(localStorage.getItem('cart'));
+    if (cartItems && cartItems.length > 0) {
+      const productDetailsElement = document.getElementById("productDetails");
+      const totalPriceElement = document.getElementById("totalPrice");
+
+      let totalPrice = 0;
+      // Clear previous product details
+      productDetailsElement.innerHTML = "<h3>Product Details:</h3>";
+      cartItems.forEach(item => {
+        // Add product details including quantity
+        productDetailsElement.innerHTML += `<p>${item.quantity}x ${item.productName} (${item.selectedColor}) - ₹${item.productPrice.toFixed(2)}</p>`;
+        totalPrice += item.productPrice * item.quantity; // Update total price considering quantity
+      });
+      // Set total price
+      totalPriceElement.innerHTML = `<h3>Total Price: ₹${totalPrice.toFixed(2)}</h3>`;
+    } else {
+      // Handle case when cart is empty
+      document.getElementById("productDetails").innerHTML = "<p>Your cart is empty</p>";
+      document.getElementById("totalPrice").innerHTML = "";
+    }
+  }
+
+  // Fetch user details from Firebase
+  function fetchUserDetails() {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is logged in, fetch the user details from Firestore
+        const userRef = doc(db, 'users', user.uid);
+        
+        getDoc(userRef)
+          .then((docSnapshot) => {
+            if (docSnapshot.exists()) {
+              const userData = docSnapshot.data();
+              // Populate input fields with user details
+              document.getElementById('fullName').value = userData.fullName;
+              document.getElementById('address').value = userData.address;
+              document.getElementById('phoneNumber').value = userData.phoneNumber;
+              document.getElementById('email').value = user.email; // Set user email
+            } else {
+              console.log('User data not found.');
+            }
+          })
+          .catch((error) => {
+            console.error('Error fetching user data:', error);
+          });
+      }
+    });
+  }
+
+  // Call function to display cart data and fetch user details on page load
+  window.onload = function () {
+    displayCartData();
+    fetchUserDetails();
+  };
+
+    // Function to handle form submission
+    document.getElementById('paymentForm').addEventListener('submit', function (event) {
+    event.preventDefault(); // Prevent the default form submission behavior
+
+    // Retrieve form input values
+    const fullName = document.getElementById('fullName').value;
+    const address = document.getElementById('address').value;
+    const email = document.getElementById('email').value;
+    const phoneNumber = document.getElementById('phoneNumber').value;
+    const upiId = document.getElementById('upiId').value;
+
+    const cartItems = JSON.parse(localStorage.getItem('cart'));
+    // Calculate total price
+    let totalPrice = 0;
+    if (cartItems && cartItems.length > 0) {
+      totalPrice = cartItems.reduce((total, item) => total + (item.productPrice * item.quantity), 0);
+    }
+
+    // Prepare data to store in Firestore
+    const orderData = {
+      fullName: fullName,
+      address: address,
+      email: email,
+      phoneNumber: phoneNumber,
+      upiId: upiId,
+      products: cartItems,
+      totalPrice: totalPrice,
+      timestamp: new Date().toISOString() // Timestamp of when the order was placed
+    };
+    const orderRef = collection(db, 'orders'); // Reference to the 'orders' collection
+addDoc(orderRef, orderData) // Use addDoc to automatically generate a unique document ID
+  .then((docRef) => {
+    // Clear cart data from localStorage
+    localStorage.removeItem('cart');
+    // Display success message
+    alert('Your order has been successfully placed!\n\nOrder ID: ' + docRef.id);
+    // Redirect to a thank you page or home page
+    window.location.href = 'thank_you.html'; // Replace 'thank_you.html' with the desired page
+  })
+  .catch((error) => {
+    console.error('Error placing order:', error);
+    // Display error message
+    alert('An error occurred while placing your order. Please try again later.');
+  });
+  });
+</script>
+
+ 
+</body>
+</html>

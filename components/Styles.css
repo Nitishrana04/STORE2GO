@@ -1,0 +1,78 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-image: url('./Background.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+form {
+    width: 300px;
+        padding-top: 200px;
+    margin: 0 auto; /* Center the form horizontally */
+}
+
+h3 {
+    text-align: center;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: black;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+.container {
+    margin-top: 50px; /* Adjust as needed */
+}
+
+.card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+}
+
+.card-body {
+    padding: 20px; /* Add padding for content inside card body */
+}
+
+.btn-primary {
+    background-color: #007bff; /* Set primary button background color */
+    color: #fff; /* Set text color */
+    border: none; /* Remove border */
+}
+
+.btn-primary:hover {
+    background-color: #0056b3; /* Darker color on hover */
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between; /* Space buttons evenly */
+}
+
+button {
+    width: calc(50% - 5px); /* Subtract margin between buttons */
+    padding: 10px;
+    background-color: lightblue;
+    color: red;
+    border: 5px;
+    border-radius: 10px;
+    cursor: pointer;
+    
+}
+
+button:hover {
+    background-color: blue;
+}

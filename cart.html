@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cart</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="cart.css">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar bg-light">
+        <div class="container">
+          <a class="navbar-brand" href="#">STORE2GO</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto">
+              <li class="nav-item">
+                <a class="nav-link" href="./index.html">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="./nav/contant.html">Contact</a>
+              </li>
+              <!-- Cart section in the navbar -->
+              <li class="nav-item ml-auto">
+                <a class="nav-link" href="cart.html" id="cartLink">Cart</a>
+              </li>
+              <!-- User email section -->
+              <li>
+                <div class="dropdown">
+                  <button class="dropbtn">User</button>
+                  <div class="dropdown-content">
+                    <a href="./components/signup.html">Sign Up</a>
+                    <a href="./components/login.html">Log In</a>
+                  </div>
+                </div>
+              </li>
+              <li class="nav-item" id="userEmailLi" >
+                <span id="userEmail" class="nav-link"></span>
+              </li>
+              <li class="nav-item" id="signOutLi" style="display: none;">
+                <button id="signOutBtn" class="btn btn-outline-danger">Sign Out</button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+    <div class="cart-container">
+      <div class="cart-items">
+        <h1>Your Cart</h1>
+        <ul id="cartItemList">
+          <!-- Cart items will be populated here -->
+        </ul>
+        <div id="totalPrice">Total: ₹0.00</div>
+        <button id="checkoutButton">Checkout</button>
+        <button id="processToPaymentButton">Process to Payment</button>
+      </div>
+    </div>
+    <!-- Include any necessary JavaScript files -->
+    <script src="cart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js'
+        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js'
+        import { getFirestore, collection, doc, serverTimestamp, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js';
+
+    
+        const firebaseConfig = {
+            apiKey: "AIzaSyB03_K2sDWYo90761ZFAzjcqwJKWR7S5w0",
+  authDomain: "loginpage-b299a.firebaseapp.com",
+  databaseURL: "https://loginpage-b299a-default-rtdb.firebaseio.com",
+  projectId: "loginpage-b299a",
+  storageBucket: "loginpage-b299a.appspot.com",
+  messagingSenderId: "675343735743",
+  appId: "1:675343735743:web:3da0f6d12000f219365f0a",
+  measurementId: "G-G724PQ24GW"
+        };
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+    
+        // Function to display user's email
+        function displayUserEmail(user) {
+          const userEmailElement = document.getElementById("userEmail");
+          const signOutLiElement = document.getElementById("signOutLi");
+          if (user && user.email) {
+            userEmailElement.textContent = user.email;
+            signOutLiElement.style.display = "block";
+          } else {
+            userEmailElement.textContent = "";
+            signOutLiElement.style.display = "none";
+          }
+        }
+    
+        // Check if user is logged in on page load
+        onAuthStateChanged(auth, (user) => {
+          displayUserEmail(user);
+        });
+    
+        // Sign out function
+        document.getElementById("signOutBtn").addEventListener("click", function () {
+          signOut(auth).then(() => {
+            // Sign-out successful.
+            window.location.href = "./index.html"; // Redirect to login page after sign-out
+          }).catch((error) => {
+            // An error happened.
+            console.error(error);
+          });
+        });
+// Function to handle checkout
+    document.getElementById('checkoutButton').addEventListener('click', function() {
+        // Check if user is logged in
+        const user = auth.currentUser;
+        if (user) {
+            // User is signed in, proceed with storing cart data
+            const cartItems = JSON.parse(localStorage.getItem('cart'));
+            if (!cartItems || cartItems.length === 0) {
+                alert('Your cart is empty. Please add items to proceed with checkout.');
+                return;
+            }
+            const userCartRef = doc(db, 'carts', user.uid); // Reference to user's cart document
+    
+            setDoc(userCartRef, {
+                cartItems: cartItems,
+                timestamp: serverTimestamp()
+            }, { merge: true }) // Use setDoc() with merge option to update or create document
+            .then(() => {
+                // Cart data stored successfully
+                console.log('Cart data stored in Firestore.');
+                localStorage.removeItem('cart'); // Clear local storage
+                alert('Checkout successful!');
+            })
+            .catch((error) => {
+                // Error handling
+                console.error('Error storing cart data:', error);
+                alert('Error during checkout. Please try again later.');
+            });
+        } else {
+            // User is not logged in, prompt the user to log in
+            alert('Please log in to proceed with checkout.');
+            window.location.href = './components/login.html'; // Redirect to login page
+        }
+    });
+    // Check if user is logged in on page load
+    onAuthStateChanged(auth, (user) => {
+//   console.log('User:', user);
+  displayUserEmail(user);
+  if (user) {
+    // User is logged in, fetch the cart data from Firestore using their email
+    const userEmail = user.email;
+    // console.log('User email:', userEmail);
+    const userCartRef = doc(db, 'carts',user.uid);
+    // console.log('User cart ref:', userCartRef);
+    getDoc(userCartRef)
+      .then((docSnapshot) => {
+        // console.log(docSnapshot);
+        if (docSnapshot.exists()) {
+          const cartData = docSnapshot.data();
+          // Do something with the cart data, like updating the local storage or displaying it on the page
+          localStorage.setItem('cart', JSON.stringify(cartData.cartItems));
+          console.log('User cart data:', cartData);
+        } else {
+          console.log('User cart data not found.');
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching user cart data:', error);
+      });
+  }
+});
+ document.getElementById('processToPaymentButton').addEventListener('click', function() {
+      // Redirect to the payment page
+      window.location.href = 'payment.html';
+    });
+
+      </script>
+  </body>
+</html>
